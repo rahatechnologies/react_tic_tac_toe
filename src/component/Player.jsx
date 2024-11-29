@@ -1,6 +1,6 @@
 import { useState } from "react"
 import OpenModalOption from "./OpenModalOption"; 
-export default function Player({initialName, symbol}) {
+export default function Player({initialName, symbol, isActive}) {
 
     // Implement Player component to render player name and symbol with an edit button.
     // When the edit button is clicked, display a form with the player's name and symbol fields.
@@ -38,7 +38,7 @@ function handleTextChange(event){
 
 
 
-    return <li>
+    return <li className={isActive ? 'active' : undefined}>
                 <span className="player">
                     {editablePlayerName}
                     {/* <OpenModalOption/> */}

@@ -1,40 +1,72 @@
-import { useState } from "react"
-import GameBoard from "./component/GameBoard"
-import Header  from "./component/Header"
-import Player from "./component/Player"
-// import OpenModalOption from "./component/OpenModalOption"
+import { useState } from 'react';
+
+import Player from './component/Player.jsx';
+import GameBoard from './component/GameBoard.jsx';
+import Log from './component/Log.jsx';
+
+const SYMBOL_X= 'X';
+const SYMBOL_O= 'O';
+
+function deriveActivePlayer(gameTurns) {
+
+  let currentPlayer = SYMBOL_X;
+
+  if (gameTurns.length > 0 && gameTurns[0].player === SYMBOL_X) {
+    currentPlayer = SYMBOL_O;
+  }
+
+  return currentPlayer;
+}
+
+
 function App() {
 
-  const Symbol_X  = "X";
-  const Symbol_0  = "0";
-  const [activePlayer, setActivePlayer] = useState(Symbol_X);
+  const [gameTurns, setGameTurns] = useState([]);
+  const activePlayer = deriveActivePlayer(gameTurns);
 
-  function handleSelectSquare() {
-            setActivePlayer((curActivePlayer) => curActivePlayer === Symbol_X ? Symbol_0 : Symbol_X );
+  function handleSelectSquare(rowIndex, colIndex) {
+   setGameTurns((prevTurns) => {
+
+      const currentPlayer =  deriveActivePlayer(prevTurns);
+      const updatedTurns = [
+        { 
+          square: 
+            { 
+              row: rowIndex,
+              col: colIndex 
+            },
+          player: currentPlayer 
+        },
+        ...prevTurns,
+      ];
+
+      return updatedTurns;
+    });
   }
 
   return (
-    <>
-    <Header />
-
     <main>
-        <div id="game-container">
-     
-     {/*  Player Section */}
-          <ol id="players">
-            <Player initialName="Player 1" symbol={Symbol_X} />          
-            <Player initialName="Player 2" symbol= {Symbol_0} />          
-          </ol>
-     
-     
-     {/*  Game Board Section */}
-        <GameBoard onSelectSquare={handleSelectSquare} activePlayerSymbol={activePlayer} />
-        </div>
+      <div id="game-container">
+        <ol id="players" className="highlight-player">
+          <Player
+            initialName="Player 1"
+            symbol="X"
+            isActive={activePlayer === SYMBOL_X}
+          />
+          <Player
+            initialName="Player 2"
+            symbol="O"
+            isActive={activePlayer === SYMBOL_O}
+          />
+        </ol>
+        <GameBoard
+          onSelectSquare={handleSelectSquare}
+          turns={gameTurns}
+        />
+      </div>
+      <Log turns={gameTurns}/>
     </main>
-    
-    </>
-    // <OpenModalOption/>
-  )
+  );
 }
 
-export default App
+export default App;
